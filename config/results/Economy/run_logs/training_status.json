@@ -1,0 +1,38 @@
+{
+    "Economy": {
+        "checkpoints": [
+            {
+                "steps": 499996,
+                "file_path": "results\\Economy\\Economy\\Economy-499996.onnx",
+                "reward": null,
+                "creation_time": 1676480673.089545,
+                "auxillary_file_paths": [
+                    "results\\Economy\\Economy\\Economy-499996.pt"
+                ]
+            },
+            {
+                "steps": 500700,
+                "file_path": "results\\Economy\\Economy\\Economy-500700.onnx",
+                "reward": null,
+                "creation_time": 1676480673.2432842,
+                "auxillary_file_paths": [
+                    "results\\Economy\\Economy\\Economy-500700.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 500700,
+            "file_path": "results\\Economy\\Economy.onnx",
+            "reward": null,
+            "creation_time": 1676480673.2432842,
+            "auxillary_file_paths": [
+                "results\\Economy\\Economy\\Economy-500700.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.27.0",
+        "torch_version": "1.7.1+cu110"
+    }
+}
