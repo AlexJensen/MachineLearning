@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Gold
   - HQ
+  - Wall
   layers:
   - Default
   - TransparentFX

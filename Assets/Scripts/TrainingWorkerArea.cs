@@ -12,7 +12,7 @@ public class TrainingWorkerArea : MonoBehaviour
 
     GameObject[] goldPool;
 
-    public void CreateGoldBatches()
+    public void CreateGoldBatches(bool resetAll = false)
     {
         if (goldPool == null)
         {
@@ -26,7 +26,7 @@ public class TrainingWorkerArea : MonoBehaviour
         }
         for (int i = 0; i < totalGold; i++)
         {
-            if (!goldPool[i].activeSelf)
+            if (!goldPool[i].activeSelf || resetAll)
             {
                 goldPool[i].transform.localPosition = new Vector3(Random.Range(-boardSize, boardSize), .5f, Random.Range(-boardSize, boardSize));
                 goldPool[i].SetActive(true);

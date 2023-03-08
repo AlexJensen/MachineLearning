@@ -18,6 +18,10 @@ public class HQAgent : MonoBehaviour
             gold += agent.gold;
             agent.gold = 0;
         }
+        else
+        {
+            agent.AddReward(-0.1f);
+        }
     }
     private void Update()
     {

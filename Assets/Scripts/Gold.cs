@@ -28,13 +28,17 @@ public class Gold : MonoBehaviour
             gameObject.SetActive(false);
             agent.gold += value;
         }
-        else
+        else if (agent.gold < agent.carryCapacity)
         {
             int openSpace = agent.carryCapacity - agent.gold;
             agent.gold += openSpace;
             value -= openSpace;
             agent.AddReward(openSpace);
             transform.localScale = initialScale * (value / 1.5f);
+        }
+        else
+        {
+            agent.AddReward(-0.1f);
         }
     }
 }

@@ -3,6 +3,7 @@ using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Actuators;
 using TMPro;
+using UnityEditor;
 
 public class WorkerAgent : Agent
 {
@@ -18,11 +19,12 @@ public class WorkerAgent : Agent
     public TextMeshProUGUI goldGui;
     public int gold = 0;
     public int carryCapacity;
+    public bool detailedInfo = false;
 
     Rigidbody m_rigidbody;
     Vector3 m_startPos;
 
-    
+
 
     public override void Initialize()
     {
@@ -34,9 +36,9 @@ public class WorkerAgent : Agent
     {
         m_rigidbody.velocity = Vector3.zero;
         transform.localPosition = m_startPos;
-        transform.localRotation = Quaternion.Euler(new Vector3(0f, Random.Range(0, 360)));
+        transform.localRotation = Quaternion.identity;
         HQ.gold = 0;
-        area.CreateGoldBatches();
+        area.CreateGoldBatches(true);
         gold = 0;
     }
 
@@ -66,7 +68,7 @@ public class WorkerAgent : Agent
         var continuousActionsOut = actionsOut.ContinuousActions;
         if (Input.GetKey(KeyCode.D))
         {
-            continuousActionsOut[2] = 1;
+            continuousActionsOut[1] = 1;
         }
         if (Input.GetKey(KeyCode.W))
         {
@@ -74,7 +76,7 @@ public class WorkerAgent : Agent
         }
         if (Input.GetKey(KeyCode.A))
         {
-            continuousActionsOut[2] = -1;
+            continuousActionsOut[1] = -1;
         }
         if (Input.GetKey(KeyCode.S))
         {
@@ -84,30 +86,31 @@ public class WorkerAgent : Agent
 
     public void MoveAgent(ActionBuffers actions)
     {
-        var dirToGo = Vector3.zero;
-        var rotateDir = Vector3.zero;
-
-        var continuousActions = actions.ContinuousActions;
-        var discreteActions = actions.DiscreteActions;
+        ActionSegment<float> continuousActions = actions.ContinuousActions;
 
         var forward = Mathf.Clamp(continuousActions[0], -1f, 1f);
         var right = Mathf.Clamp(continuousActions[1], -1f, 1f);
         var rotate = Mathf.Clamp(continuousActions[2], -1f, 1f);
 
-        dirToGo = transform.forward * forward;
+        Vector3 dirToGo = transform.forward * forward;
+        Vector3 rotateDir = -transform.up * rotate;
+
         dirToGo += transform.right * right;
-        rotateDir = -transform.up * rotate;
+
+
+
+        goldGui.text = detailedInfo? gold.ToString() + "\n" + continuousActions[0] + ":" + continuousActions[1] + "\n" + GetCumulativeReward(): gold.ToString();
 
         m_rigidbody.AddForce(dirToGo * moveSpeed, ForceMode.VelocityChange);
         transform.Rotate(rotateDir, Time.fixedDeltaTime * turnSpeed);
 
-        if (m_rigidbody.velocity.sqrMagnitude > 10f) // slow it down
+        if (m_rigidbody.velocity.magnitude > 10f) // slow it down
         {
             m_rigidbody.velocity = m_rigidbody.velocity.normalized * 10f;
         }
-        if (Mathf.Abs(forward) < 0.01f && Mathf.Abs(right) < 0.01f)
+        if (Mathf.Abs(forward) < 0.1f && Mathf.Abs(right) < 0.1f)
         {
-            m_rigidbody.velocity *= 0.3f;
+            m_rigidbody.velocity *= 0.1f;
         }
     }
 
@@ -121,12 +124,16 @@ public class WorkerAgent : Agent
         {
             collision.gameObject.GetComponent<HQAgent>().OnCollect(this);
         }
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            AddReward(-1f);
+        }
     }
 
     private void Update()
     {
-        goldGui.text = gold.ToString();
+        //goldGui.text = gold.ToString();
         goldGui.transform.rotation = Quaternion.Euler(new Vector3(45, 0, 0));
-        AddReward(Time.deltaTime * (HQ.gold / 100));
+        AddReward(Time.fixedDeltaTime * (HQ.gold / 10f));
     }
 }
