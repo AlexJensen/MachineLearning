@@ -4,11 +4,20 @@ using Unity.MLAgents;
 using TMPro;
 using UnityEngine;
 
-public class HQAgent : MonoBehaviour
+public class HQAgent : Agent
 {
     public TextMeshProUGUI goldGui;
 
     public int gold = 0;
+
+    public RTSTrainingArea area;
+
+    public override void OnEpisodeBegin()
+    {
+        base.OnEpisodeBegin();
+        gold = 0;
+        area.InitializeTrial();
+    }
 
     internal void OnCollect(WorkerAgent agent)
     {

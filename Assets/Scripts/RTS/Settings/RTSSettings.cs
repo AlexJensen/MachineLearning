@@ -2,12 +2,10 @@
 using UnityEngine.UI;
 using Unity.MLAgents;
 
-public class WorkerSettings : MonoBehaviour
+public class RTSSettings : MonoBehaviour
 {
     [HideInInspector]
-    public GameObject[] agents;
-    [HideInInspector]
-    public TrainingWorkerArea[] listArea;
+    public RTSTrainingArea[] listArea;
 
     public int totalScore;
 
@@ -17,14 +15,14 @@ public class WorkerSettings : MonoBehaviour
     {
         Academy.Instance.OnEnvironmentReset += EnvironmentReset;
         m_Recorder = Academy.Instance.StatsRecorder;
+        listArea = FindObjectsOfType<RTSTrainingArea>();
     }
 
     void EnvironmentReset()
     {
-        listArea = FindObjectsOfType<TrainingWorkerArea>();
-        foreach (var fa in listArea)
+        foreach (RTSTrainingArea fa in listArea)
         {
-            fa.CreateGoldBatches();
+            fa.InitializeTrial();
         }
 
         totalScore = 0;
